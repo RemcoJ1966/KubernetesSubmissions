@@ -9,7 +9,7 @@ if (string.IsNullOrEmpty(port))
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 WebApplication app = builder.Build();
-app.Urls.Add($"http://localhost:{port}");
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.MapGet("/", () => $"Server started in port {port}");
 
