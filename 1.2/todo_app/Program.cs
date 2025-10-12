@@ -1,0 +1,18 @@
+string? port = Environment.GetEnvironmentVariable("PORT");
+
+if (string.IsNullOrEmpty(port))
+{
+    Console.WriteLine("Error: PORT environment variable is not set.");
+    Environment.Exit(-1); // Exit with error code -1
+}
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+WebApplication app = builder.Build();
+app.Urls.Add($"http://localhost:{port}");
+
+app.MapGet("/", () => $"Server started in port {port}");
+
+Console.WriteLine($"Server started in port {port}");
+
+app.Run();
