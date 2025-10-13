@@ -6,3 +6,4 @@
 
 - [1.1.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/main/1.1)
 - [1.2.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/main/1.2)
+- [1.3.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/main/1.1/manifests)
