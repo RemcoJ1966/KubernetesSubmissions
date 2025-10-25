@@ -1,5 +1,5 @@
 # base image for running the application
-FROM mcr.microsoft.com/dotnet/runtime:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 
 # base image for building the application
@@ -15,4 +15,6 @@ RUN dotnet publish log_output.csproj -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV PORT=3500
+EXPOSE 3500
 ENTRYPOINT [ "dotnet", "log_output.dll" ]
