@@ -28,12 +28,13 @@ public class RandomStringService : BackgroundService
     private static readonly string formatString =
         CultureInfo.InvariantCulture.DateTimeFormat.UniversalSortableDateTimePattern;
     private static readonly string randomStr = Guid.NewGuid().ToString();
-    public string Status => $"{DateTime.Now.ToString(formatString)}: {randomStr}";
+    public string Status { get; private set; } = string.Empty;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
+            Status = $"{DateTime.Now.ToString(formatString)}: {randomStr}";
             Console.WriteLine(Status);
             await Task.Delay(5000, cancellationToken);
         }
