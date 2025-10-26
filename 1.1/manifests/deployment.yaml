@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: logoutput
-          image: rjantp/kubernetessubmissions:ex1.1
+          image: rjantp/kubernetessubmissions:ex1.7
           resources:
             requests:
               memory: "64Mi"
