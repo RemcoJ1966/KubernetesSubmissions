@@ -10,4 +10,4 @@
 - [1.4.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/1.4/1.2/manifests/deployment.yaml)
 - [1.5.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/1.5/1.2/manifests/deployment.yaml)
 - [1.6.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/1.6/1.2/manifests/service.yaml)
-- [1.7.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/main/1.1)
+- [1.7.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/1.7/1.1)
