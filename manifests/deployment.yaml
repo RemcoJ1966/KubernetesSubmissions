@@ -1,24 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hashgenerator-dep
+  name: images-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hashgenerator
+      app: images
   template:
     metadata:
       labels:
-        app: hashgenerator
+        app: images
     spec:
+      volumes:
+        - name: shared-image
+          emptyDir: {}
       containers:
-        - name: hashgenerator
-          image: jakousa/dwk-app1:b7fc18de2376da80ff0cfc72cf581a9f94d10e64
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
+        - name: image-finder
+          image: jakousa/dwk-app3-image-finder:b7fc18de2376da80ff0cfc72cf581a9f94d10e64
+          volumeMounts:
+          - name: shared-image
+            mountPath: /usr/src/app/files
+        - name: image-response
+          image: jakousa/dwk-app3-image-response:b7fc18de2376da80ff0cfc72cf581a9f94d10e64
+          volumeMounts:
+          - name: shared-image
+            mountPath: /usr/src/app/files
