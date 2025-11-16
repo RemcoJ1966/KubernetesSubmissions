@@ -22,8 +22,9 @@ public class IndexModel : PageModel
         {
             _logger.LogInformation("Reusing existing photo from previous run");
             Global.NewPhoto = false;
-            Global.FirstTime = false;
         }
+
+        Global.FirstTime = false;
 
         if (Global.NewPhoto)
         {
