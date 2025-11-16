@@ -13,17 +13,18 @@ public class IndexModel : PageModel
     public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
-
-        // Don't get a new photo if one exists from a previous run
-        if (System.IO.File.Exists($"wwwroot/{PhotoFile}"))
-        {
-            _logger.LogInformation("Reusing existing photo from previous run");
-            Global.NewPhoto = false;
-        }
     }
 
     public async Task OnGetAsync()
     {
+        // Don't get a new photo if one exists from a previous run
+        if (Global.FirstTime && System.IO.File.Exists($"wwwroot/{PhotoFile}"))
+        {
+            _logger.LogInformation("Reusing existing photo from previous run");
+            Global.NewPhoto = false;
+            Global.FirstTime = false;
+        }
+
         if (Global.NewPhoto)
         {
             _logger.LogInformation("Downloading a new photo");
