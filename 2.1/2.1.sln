@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "log_ping_pong", "log_ping_pong", "{C13635B2-9FEB-FC12-74C1-6123F43DE735}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "log_output", "log_ping_pong\log_output\log_output.csproj", "{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ping_pong", "log_ping_pong\ping_pong\ping_pong.csproj", "{B1B84D14-9BCC-1127-ABED-9C4F99DFF159}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1B84D14-9BCC-1127-ABED-9C4F99DFF159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1B84D14-9BCC-1127-ABED-9C4F99DFF159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1B84D14-9BCC-1127-ABED-9C4F99DFF159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1B84D14-9BCC-1127-ABED-9C4F99DFF159}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92F56ECC-6A10-4B1A-45F0-E2A83EF605B3} = {C13635B2-9FEB-FC12-74C1-6123F43DE735}
+		{B1B84D14-9BCC-1127-ABED-9C4F99DFF159} = {C13635B2-9FEB-FC12-74C1-6123F43DE735}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE9DA7CF-48DC-4043-A084-C9A05B8C0630}
+	EndGlobalSection
+EndGlobal

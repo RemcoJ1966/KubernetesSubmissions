@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logpingpong-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logpingpong
+  template:
+    metadata:
+      labels:
+        app: logpingpong
+    spec:
+      containers:
+        - name: logoutput
+          image: rjantp/kubernetessubmissions:ex2.1l2
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: PORT
+              value: "3000"
+        - name: pingpong
+          image: rjantp/kubernetessubmissions:ex2.1p
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: PORT
+              value: "3500"
+
