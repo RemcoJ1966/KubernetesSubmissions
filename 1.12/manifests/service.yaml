@@ -11,3 +11,7 @@ spec:
     name: todoapp-port
     protocol: TCP
     targetPort: 3000
+  - port: 2345
+    name: todobackend-port
+    protocol: TCP
+    targetPort: 3500

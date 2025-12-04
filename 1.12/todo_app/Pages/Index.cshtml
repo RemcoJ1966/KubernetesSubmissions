@@ -17,9 +17,10 @@
 
 <div>
     <ul>
-        <li>Learn JavaScript</li>
-        <li>Learn React</li>
-        <li>Build a project</li>
+        @foreach (string todo in Model._todos)
+        {
+            <li>@todo</li>
+         }
     </ul>
 </div>
 

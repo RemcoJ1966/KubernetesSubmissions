@@ -12,6 +12,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<PhotoTimerService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<PhotoTimerService>());
+builder.Services.AddHttpClient();
 
 WebApplication app = builder.Build();
 app.Urls.Add($"http://0.0.0.0:{port}");

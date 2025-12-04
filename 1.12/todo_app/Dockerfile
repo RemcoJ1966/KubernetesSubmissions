@@ -5,7 +5,7 @@ WORKDIR /app
 # base image for building the application
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY todo_app/ .
+COPY ./ .
 RUN dotnet restore todo_app.csproj
 RUN dotnet build todo_app.csproj -c Release -o /app/build
 
