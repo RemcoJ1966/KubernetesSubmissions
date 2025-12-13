@@ -2,10 +2,16 @@ using System.Globalization;
 using System.Text;
 
 string? port = Environment.GetEnvironmentVariable("PORT");
-
 if (string.IsNullOrEmpty(port))
 {
     Console.WriteLine("Error: PORT environment variable is not set.");
+    Environment.Exit(-1); // Exit with error code -1
+}
+
+string? message = Environment.GetEnvironmentVariable("MESSAGE");
+if (string.IsNullOrEmpty(port))
+{
+    Console.WriteLine("Error: MESSAGE environment variable is not set.");
     Environment.Exit(-1); // Exit with error code -1
 }
 
@@ -25,9 +31,29 @@ app.Run();
 
 async Task<string> ComposeHtml(string status)
 {
-    StringBuilder strBuilder = new($"<div><p>{status}</p></div>");
+    StringBuilder strBuilder = new(FileContentsToHtml());
 
+    strBuilder.Append($"<div><p>env variable: MESSAGE={message}</p></div>");
+    strBuilder.Append($"<div><p>{status}</p></div>");
     strBuilder.Append($"<div><p>Ping / Pongs: {await GetPingPongCount("http://logpingpong-svc:2345/pings")}</p></div>");
+
+    return strBuilder.ToString();
+}
+
+string FileContentsToHtml()
+{
+    string path = @"/var/tmp/information.txt";
+
+    StringBuilder strBuilder = new("<div>");
+
+    using StreamReader reader = new(path);
+    string? line;
+    while ((line = reader.ReadLine()) is not null)
+    {
+        strBuilder.Append($"<p>file content: {line}</p>");
+    }
+
+    strBuilder.Append("</div>");
 
     return strBuilder.ToString();
 }

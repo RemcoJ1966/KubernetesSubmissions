@@ -13,9 +13,19 @@ spec:
       labels:
         app: logpingpong
     spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logoutput-config
+            items:
+              - key: file
+                path: information.txt
       containers:
         - name: logoutput
-          image: rjantp/kubernetessubmissions:ex2.1l2
+          image: rjantp/kubernetessubmissions:ex2.5a
+          volumeMounts:
+            - name: config-volume
+              mountPath: /var/tmp
           resources:
             requests:
               memory: "64Mi"
@@ -26,6 +36,11 @@ spec:
           env:
             - name: PORT
               value: "3000"
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-config
+                  key: message
         - name: pingpong
           image: rjantp/kubernetessubmissions:ex2.1p
           resources:
