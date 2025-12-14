@@ -1,17 +1,14 @@
-using Microsoft.Extensions.Primitives;
-
-string? port = Environment.GetEnvironmentVariable("PORT");
-
-if (string.IsNullOrEmpty(port))
+string? url = Environment.GetEnvironmentVariable("LISTEN_URL");
+if (string.IsNullOrEmpty(url))
 {
-    Console.WriteLine("Error: PORT environment variable is not set.");
+    Console.WriteLine("Error: LISTEN_URL environment variable is not set.");
     Environment.Exit(-1); // Exit with error code -1
 }
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 WebApplication app = builder.Build();
-app.Urls.Add($"http://0.0.0.0:{port}");
+app.Urls.Add(url);
 
 List<string> _todos = [];
 
@@ -31,6 +28,6 @@ app.MapPost("/todos", async (HttpRequest request) =>
     return Results.Created("/todos/{todo}", todo);
 });
 
-Console.WriteLine($"Server started in port {port}");
+Console.WriteLine($"Server listening on {url}");
 
 app.Run();

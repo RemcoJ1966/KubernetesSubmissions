@@ -8,17 +8,27 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
 
     [BindProperty]
-    public string PhotoFile { get; init; } = "images/photo.jpg";
+    public string PhotoFile { get; init; }
 
     [BindProperty]
     public string Todo { get; set; } = "";
 
-    public IndexModel(ILogger<IndexModel> logger, IHttpClientFactory httpClientFactory)
+    private readonly string _serviceUrl;
+    private readonly string _picsumUrl;
+
+    public IndexModel(ILogger<IndexModel> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
+        
+        PhotoFile = _configuration.GetValue<string>("PHOTO_FILE") ?? String.Empty;
+
+        _serviceUrl = _configuration.GetValue<string>("SERVICE_URL") ?? String.Empty;
+        _picsumUrl = _configuration.GetValue<string>("PICSUM_URL") ?? String.Empty;
     }
 
     public List<string> _todos { get; set; } = [];
@@ -34,7 +44,7 @@ public class IndexModel : PageModel
         {
             using HttpClient httpClient = _httpClientFactory.CreateClient();
 
-            HttpResponseMessage response = await httpClient.PostAsync("http://todoapp-svc:2345/todos", new StringContent(Todo));
+            HttpResponseMessage response = await httpClient.PostAsync(_serviceUrl, new StringContent(Todo));
             response.EnsureSuccessStatusCode();
         }
 
@@ -47,7 +57,7 @@ public class IndexModel : PageModel
 
         using HttpClient httpClient = _httpClientFactory.CreateClient();
 
-        HttpResponseMessage response = await httpClient.GetAsync("http://todoapp-svc:2345/todos");
+        HttpResponseMessage response = await httpClient.GetAsync(_serviceUrl);
         response.EnsureSuccessStatusCode();
 
         string? jsonString = await response.Content.ReadAsStringAsync();
@@ -72,7 +82,7 @@ public class IndexModel : PageModel
         if (Global.NewPhoto)
         {
             _logger.LogInformation("Downloading a new photo");
-            await DownloadImageAsync("https://picsum.photos/1200", $"wwwroot/{PhotoFile}");
+            await DownloadImageAsync(_picsumUrl, $"wwwroot/{PhotoFile}");
             Global.NewPhoto = false;
         }
     }

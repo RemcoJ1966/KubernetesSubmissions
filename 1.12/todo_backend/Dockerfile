@@ -16,6 +16,4 @@ FROM base AS final
 WORKDIR /app
 RUN mkdir -p /app/wwwroot/images
 COPY --from=publish /app/publish .
-ENV PORT=3500
-EXPOSE 3500
 ENTRYPOINT [ "dotnet", "todo_backend.dll" ]

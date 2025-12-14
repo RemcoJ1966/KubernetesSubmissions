@@ -19,7 +19,7 @@ spec:
             claimName: todoapp-claim
       containers:
         - name: todoapp
-          image: rjantp/kubernetessubmissions:ex2.2a6
+          image: rjantp/kubernetessubmissions:ex2.6a2
           volumeMounts:
           - name: persistent-volume
             mountPath: /app/wwwroot/images
@@ -31,10 +31,33 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           env:
-            - name: PORT
-              value: "3000"
+            - name: LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: listen-url
+            - name: DELAY
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: photo-delay
+            - name: PHOTO_FILE
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: photo-file
+            - name: SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: service-url
+            - name: PICSUM_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: picsum-url
         - name: todobackend
-          image: rjantp/kubernetessubmissions:ex2.2b3
+          image: rjantp/kubernetessubmissions:ex2.6b
           resources:
             requests:
               memory: "64Mi"
@@ -43,5 +66,8 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           env:
-            - name: PORT
-              value: "3500"
+            - name: LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoabackend-config
+                  key: listen-url
