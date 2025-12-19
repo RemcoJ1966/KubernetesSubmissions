@@ -42,7 +42,7 @@ spec:
                   name: logoutput-config
                   key: message
         - name: pingpong
-          image: rjantp/kubernetessubmissions:ex2.1p
+          image: rjantp/kubernetessubmissions:ex2.7p7
           resources:
             requests:
               memory: "64Mi"
