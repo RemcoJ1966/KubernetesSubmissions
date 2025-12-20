@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: project
+  name: todo-job
+spec:
+  schedule: "50 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: todo-job
+            image: rjantp/kubernetessubmissions:ex2.9j4
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: CONN_STRING
+                valueFrom:
+                  secretKeyRef:
+                    name: todobackend-secret
+                    key: connection-string
+          restartPolicy: OnFailure

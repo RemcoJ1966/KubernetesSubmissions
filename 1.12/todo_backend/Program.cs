@@ -8,7 +8,7 @@ if (string.IsNullOrEmpty(url))
 }
 
 string? connString = Environment.GetEnvironmentVariable("CONN_STRING");
-if (string.IsNullOrEmpty(url))
+if (string.IsNullOrEmpty(connString))
 {
     Console.WriteLine("Error: CONN_STRING environment variable is not set.");
     Environment.Exit(-1); // Exit with error code -1
@@ -21,8 +21,6 @@ builder.Services.AddNpgsqlDataSource(connString!);
 
 WebApplication app = builder.Build();
 app.Urls.Add(url);
-
-List<string> _todos = [];
 
 
 // Ensure the table exists
@@ -41,9 +39,23 @@ await createTable.ExecuteNonQueryAsync();
 
 
 // Endpoints
-app.MapGet("/todos", () => 
+app.MapGet("/todos", async () => 
 {
     Console.WriteLine("GET received at /todos");
+
+    await using NpgsqlCommand select = dataSource.CreateCommand(
+        "SELECT todo FROM todos ORDER BY id ASC");
+    await using NpgsqlDataReader reader = await select.ExecuteReaderAsync();
+
+    List<string> _todos = [];
+
+    while (await reader.ReadAsync())
+    {
+        string todo = reader.GetString(0);
+        Console.WriteLine($"Fetched todo: {todo}");
+        _todos.Add(todo);
+    }
+
     return Results.Ok(_todos);
 });
 
@@ -52,8 +64,6 @@ app.MapPost("/todos", async (HttpRequest request) =>
     Console.WriteLine("POST received at /todos");
     var body = new StreamReader(request.Body);
     string todo = await body.ReadToEndAsync();
-
-    _todos.Add(todo);
 
     await using NpgsqlCommand insert = dataSource.CreateCommand(
         $"INSERT INTO todos (todo) VALUES (\'{todo}\')");

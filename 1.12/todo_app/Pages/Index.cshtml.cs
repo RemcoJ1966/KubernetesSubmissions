@@ -38,7 +38,7 @@ public class IndexModel : PageModel
         await Task.WhenAll([GetPhoto(), GetTodos()]);
     }
 
-    public async Task OnPostAsync()
+    public async Task<IActionResult> OnPostAsync()
     {
         if (!string.IsNullOrWhiteSpace(Todo))
         {
@@ -49,6 +49,8 @@ public class IndexModel : PageModel
         }
 
         await GetTodos();
+
+        return RedirectToPage();
     }
 
     private async Task GetTodos()
