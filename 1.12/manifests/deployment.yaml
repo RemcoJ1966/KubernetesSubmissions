@@ -19,7 +19,7 @@ spec:
             claimName: todoapp-claim
       containers:
         - name: todoapp
-          image: rjantp/kubernetessubmissions:ex2.9a1
+          image: rjantp/kubernetessubmissions:ex2.10a2
           volumeMounts:
           - name: persistent-volume
             mountPath: /app/wwwroot/images
@@ -57,7 +57,7 @@ spec:
                   name: todoapp-config
                   key: picsum-url
         - name: todobackend
-          image: rjantp/kubernetessubmissions:ex2.9b2
+          image: rjantp/kubernetessubmissions:ex2.10b3
           resources:
             requests:
               memory: "64Mi"

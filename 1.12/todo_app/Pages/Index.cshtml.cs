@@ -45,7 +45,10 @@ public class IndexModel : PageModel
             using HttpClient httpClient = _httpClientFactory.CreateClient();
 
             HttpResponseMessage response = await httpClient.PostAsync(_serviceUrl, new StringContent(Todo));
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Post request failed: {} ({})", response.StatusCode, response.ReasonPhrase);
+            }
         }
 
         await GetTodos();

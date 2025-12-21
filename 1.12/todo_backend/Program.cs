@@ -27,7 +27,7 @@ app.Urls.Add(url);
 NpgsqlDataSource? dataSource = app.Services.GetRequiredService<NpgsqlDataSource>();
 if (dataSource is null)
 {
-    Console.WriteLine("Error: datasource not registered.");
+    app.Logger.LogError("datasource not registered");
     Environment.Exit(-1); // Exit with error code -1
 }
 
@@ -41,7 +41,7 @@ await createTable.ExecuteNonQueryAsync();
 // Endpoints
 app.MapGet("/todos", async () => 
 {
-    Console.WriteLine("GET received at /todos");
+    app.Logger.LogInformation("GET received at /todos");
 
     await using NpgsqlCommand select = dataSource.CreateCommand(
         "SELECT todo FROM todos ORDER BY id ASC");
@@ -52,7 +52,7 @@ app.MapGet("/todos", async () =>
     while (await reader.ReadAsync())
     {
         string todo = reader.GetString(0);
-        Console.WriteLine($"Fetched todo: {todo}");
+        app.Logger.LogInformation("Fetched todo: {}", todo);
         _todos.Add(todo);
     }
 
@@ -61,17 +61,25 @@ app.MapGet("/todos", async () =>
 
 app.MapPost("/todos", async (HttpRequest request) =>
 {
-    Console.WriteLine("POST received at /todos");
+    app.Logger.LogInformation("POST received at /todos");
     var body = new StreamReader(request.Body);
     string todo = await body.ReadToEndAsync();
+
+    if (todo.Length > 140)
+    {
+        app.Logger.LogError("Todo rejected for being too long");
+        return Results.BadRequest("Todo length cannot exceed 140 characters");
+    }
 
     await using NpgsqlCommand insert = dataSource.CreateCommand(
         $"INSERT INTO todos (todo) VALUES (\'{todo}\')");
     await insert.ExecuteNonQueryAsync();
 
+    app.Logger.LogInformation("Stored todo: {}", todo);
+
     return Results.Created("/todos/{todo}", todo);
 });
 
-Console.WriteLine($"Server listening on {url}");
+app.Logger.LogInformation("Server listening on {}", url);
 
 app.Run();
