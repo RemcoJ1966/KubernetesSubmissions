@@ -29,3 +29,4 @@
 - [2.7.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/2.7/2.1)
 - [2.8.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/2.8/1.12)
 - [2.9.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/2.9/1.12)
+- [2.10.](https://github.com/RemcoJ1966/KubernetesSubmissions/tree/2.10/1.12)
