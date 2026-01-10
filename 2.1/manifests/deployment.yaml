@@ -1,3 +1,67 @@
+# ==========================================================
+# ConfigMap
+# ==========================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: exercises
+  name: logoutput-config
+data:
+  message: "hello world"
+  file: "this text is from file"
+---
+# ==========================================================
+# Service
+# ==========================================================
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: exercises
+  name: logpingpong-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: logpingpong
+  ports:
+  - port: 1234
+    name: logoutput-port
+    protocol: TCP
+    targetPort: 3000
+  - port: 2345
+    name: pingpong-port
+    protocol: TCP
+    targetPort: 3500
+---
+# ==========================================================
+# Ingress
+# ==========================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: exercises
+  name: dwk-material-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: logpingpong-svc
+            port:
+              name: logoutput-port
+      - path: /pingpong
+        pathType: Prefix
+        backend:
+          service:
+            name: logpingpong-svc
+            port:
+              name: pingpong-port
+---
+# ==========================================================
+# Deployment
+# ==========================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:

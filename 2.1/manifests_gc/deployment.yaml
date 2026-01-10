@@ -4,6 +4,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: exercises
   name: logoutput-config
 data:
   message: "hello world"
@@ -15,6 +16,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: exercises
   name: logpingpong-svc
 spec:
   type: LoadBalancer
@@ -36,6 +38,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercises
   name: logpingpong-dep
 spec:
   replicas: 1
