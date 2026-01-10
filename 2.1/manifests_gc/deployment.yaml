@@ -1,0 +1,75 @@
+# ==========================================================
+# ConfigMap
+# ==========================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logoutput-config
+data:
+  message: "hello world"
+  file: "this text is from file"
+---
+# ==========================================================
+# Service
+# ==========================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: logpingpong-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: logpingpong
+  ports:
+  - port: 1234
+    name: logoutput-port
+    protocol: TCP
+    targetPort: 3000
+  - port: 2345
+    name: pingpong-port
+    protocol: TCP
+    targetPort: 3500
+---
+# ==========================================================
+# Deployment
+# ==========================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logpingpong-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logpingpong
+  template:
+    metadata:
+      labels:
+        app: logpingpong
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logoutput-config
+            items:
+              - key: file
+                path: information.txt
+      containers:
+        - name: logoutput
+          image: rjantp/kubernetessubmissions:ex2.5a
+          volumeMounts:
+            - name: config-volume
+              mountPath: /var/tmp
+          env:
+            - name: PORT
+              value: "3000"
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-config
+                  key: message
+        - name: pingpong
+          image: rjantp/kubernetessubmissions:ex2.7p7
+          env:
+            - name: PORT
+              value: "3500"
