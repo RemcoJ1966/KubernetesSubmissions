@@ -4,7 +4,6 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: exercises
   name: logoutput-config
 data:
   message: "hello world"
@@ -16,7 +15,6 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: exercises
   name: logpingpong-dep
 spec:
   replicas: 1
@@ -34,10 +32,10 @@ spec:
             name: logoutput-config
             items:
               - key: file
-                path: information.txt
+                path: information.txt 
       containers:
         - name: logoutput
-          image: rjantp/kubernetessubmissions:ex2.5a
+          image: rjantp/kubernetessubmissions:ex3.3l
           volumeMounts:
             - name: config-volume
               mountPath: /var/tmp
@@ -50,7 +48,7 @@ spec:
                   name: logoutput-config
                   key: message
         - name: pingpong
-          image: rjantp/kubernetessubmissions:ex3.2p
+          image: rjantp/kubernetessubmissions:ex3.3p
           env:
             - name: PORT
               value: "3500"
@@ -61,10 +59,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: exercises
   name: logpingpong-svc
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: logpingpong
   ports:
@@ -78,28 +75,52 @@ spec:
     targetPort: 3500
 ---
 # ==========================================================
-# Ingress
+# Gateway
 # ==========================================================
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
 metadata:
-  namespace: exercises
-  name: logpingpong-ing
+  name: logpingpong-gateway
 spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 8081
+---
+# ==========================================================
+# HTTPRoute
+# ==========================================================
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: logoutput-route
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: logpingpong-gateway
   rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: logpingpong-svc
-            port:
-              name: logoutput-port
-      - path: /pingpong
-        pathType: Prefix
-        backend:
-          service:
-            name: logpingpong-svc
-            port:
-              name: pingpong-port
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: logpingpong-svc
+      port: 1234
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: pingpong-route
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: logpingpong-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /pingpong
+    backendRefs:
+    - name: logpingpong-svc
+      port: 2345

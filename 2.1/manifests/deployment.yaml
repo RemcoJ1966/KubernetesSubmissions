@@ -33,33 +33,6 @@ spec:
     targetPort: 3500
 ---
 # ==========================================================
-# Ingress
-# ==========================================================
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  namespace: exercises
-  name: dwk-material-ingress
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: logpingpong-svc
-            port:
-              name: logoutput-port
-      - path: /pingpong
-        pathType: Prefix
-        backend:
-          service:
-            name: logpingpong-svc
-            port:
-              name: pingpong-port
----
-# ==========================================================
 # Deployment
 # ==========================================================
 apiVersion: apps/v1
@@ -86,7 +59,7 @@ spec:
                 path: information.txt
       containers:
         - name: logoutput
-          image: rjantp/kubernetessubmissions:ex2.5a
+          image: rjantp/kubernetessubmissions:ex3.3l
           volumeMounts:
             - name: config-volume
               mountPath: /var/tmp
@@ -106,7 +79,7 @@ spec:
                   name: logoutput-config
                   key: message
         - name: pingpong
-          image: rjantp/kubernetessubmissions:ex2.7p7
+          image: rjantp/kubernetessubmissions:ex3.3p
           resources:
             requests:
               memory: "64Mi"
@@ -117,4 +90,57 @@ spec:
           env:
             - name: PORT
               value: "3500"
-
+---
+# ==========================================================
+# Gateway
+# ==========================================================
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  namespace: exercises
+  name: logpingpong-gateway
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 8081
+---
+# ==========================================================
+# HTTPRoute
+# ==========================================================
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  namespace: exercises
+  name: logoutput-route
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: logpingpong-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: logpingpong-svc
+      port: 1234
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  namespace: exercises
+  name: pingpong-route
+spec:
+  parentRefs:
+  - kind: Gateway
+    name: logpingpong-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /pingpong
+    backendRefs:
+    - name: logpingpong-svc
+      port: 2345

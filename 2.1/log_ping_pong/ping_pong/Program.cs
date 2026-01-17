@@ -27,9 +27,16 @@ if (dataSource is null)
     Environment.Exit(-1); // Exit with error code -1
 }
 
-await using NpgsqlCommand createTable = dataSource.CreateCommand(
-    "CREATE TABLE IF NOT EXISTS pings (ping_count INTEGER)");
-await createTable.ExecuteNonQueryAsync();
+try
+{
+    await using NpgsqlCommand createTable = dataSource.CreateCommand(
+        "CREATE TABLE IF NOT EXISTS pings (ping_count INTEGER)");
+    await createTable.ExecuteNonQueryAsync();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Couldn't create table: {ex.Message}");
+}
 
 
 // Endpoints
@@ -37,9 +44,16 @@ app.MapGet("/pingpong", async (NpgsqlDataSource dataSource) =>
 {
     count++;
 
-    await using NpgsqlCommand insert = dataSource.CreateCommand(
-        $"INSERT INTO pings (ping_count) VALUES ({count})");
-    await insert.ExecuteNonQueryAsync();
+    try
+    {
+        await using NpgsqlCommand insert = dataSource.CreateCommand(
+            $"INSERT INTO pings (ping_count) VALUES ({count})");
+        await insert.ExecuteNonQueryAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Couldn't insert into table: {ex.Message}");
+    }
 
     return $"pong {count}";
 });

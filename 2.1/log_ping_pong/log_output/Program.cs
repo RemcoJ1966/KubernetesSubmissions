@@ -62,9 +62,14 @@ async Task<string> GetPingPongCount(string pingpongUrl)
 {
     using HttpClient client = new();
     HttpResponseMessage response = await client.GetAsync(pingpongUrl);
-    response.EnsureSuccessStatusCode();
-
-    return await response.Content.ReadAsStringAsync();
+    if (response.IsSuccessStatusCode)
+    {
+        return await response.Content.ReadAsStringAsync();
+    }
+    else
+    {
+        return "Failed to retrieve pingpong count";
+    }
 }
 
 public class RandomStringService : BackgroundService
