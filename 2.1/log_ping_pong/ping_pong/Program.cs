@@ -40,7 +40,7 @@ catch (Exception ex)
 
 
 // Endpoints
-app.MapGet("/pingpong", async (NpgsqlDataSource dataSource) => 
+app.MapGet("/", async (NpgsqlDataSource dataSource) => 
 {
     count++;
 
@@ -59,7 +59,6 @@ app.MapGet("/pingpong", async (NpgsqlDataSource dataSource) =>
 });
 
 app.MapGet("/pings", () => $"{count}");
-app.MapGet("/", () => $"Just for Ingress health check.");
 
 // Run app
 Console.WriteLine($"Server started in port {port}");
