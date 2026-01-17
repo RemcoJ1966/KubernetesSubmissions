@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: project
+  name: todoapp-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoapp
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      volumes:
+        - name: persistent-volume
+          persistentVolumeClaim:
+            claimName: todoapp-claim
+      containers:
+        - name: todoapp
+          image: rjantp/kubernetessubmissions:ex2.10a2
+          volumeMounts:
+          - name: persistent-volume
+            mountPath: /app/wwwroot/images
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: listen-url
+            - name: DELAY
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: photo-delay
+            - name: PHOTO_FILE
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: photo-file
+            - name: SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: service-url
+            - name: PICSUM_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todoapp-config
+                  key: picsum-url
+        - name: todobackend
+          image: rjantp/kubernetessubmissions:ex2.10b3
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todobackend-config
+                  key: listen-url
+            - name: CONN_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: todobackend-secret
+                  key: connection-string
